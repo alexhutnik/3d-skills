@@ -39,7 +39,7 @@ For Linux and Windows, use the linked uv installation instructions.
 On Windows, symbolic links can require Developer Mode or administrator rights. Prefer plugin installation if links are unavailable.
 The commands below use a POSIX shell. Replace paths and shell syntax when using PowerShell.
 
-Clone the release:
+For links or direct tool use, clone the release:
 
 ```sh
 git clone --branch v1.0.0 https://github.com/alexhutnik/3d-skills.git
@@ -69,10 +69,12 @@ Install FFmpeg through your operating system package manager. HTML reviews do no
 
 ## Codex CLI
 
-For plugin installation, register this checkout as a local marketplace:
+For plugin installation, download the release ZIP and extract it into a new folder.
+Keep this folder free of development environments and generated files.
+Register the extracted folder as a local marketplace:
 
 ```sh
-codex plugin marketplace add /absolute/path/to/3d-skills
+codex plugin marketplace add /absolute/path/to/extracted-3d-skills
 codex plugin add 3d-skills@alexhutnik-3d
 ```
 
@@ -94,7 +96,7 @@ The installer refuses existing skill folders and unrelated links. It does not re
 Use a local coding session in the Codex desktop application.
 For linked skills, open the project configured above and start a new session.
 
-For a plugin, register the checkout with `codex plugin marketplace add` as shown above.
+For a plugin, register the extracted release with `codex plugin marketplace add` as shown above.
 Restart the desktop application. Open its Plugins Directory and select **Alex Hutnik 3D Skills**.
 Install **3D Skills**, then start a new local session.
 Interface names can differ between desktop releases. Local skill folders remain an alternative.
@@ -105,10 +107,10 @@ The same rule applies after a plugin update.
 
 ## Claude CLI
 
-Use Claude Code. Register and install the local marketplace:
+Use Claude Code. Extract the release ZIP into a clean folder, then register and install it:
 
 ```sh
-claude plugin marketplace add /absolute/path/to/3d-skills
+claude plugin marketplace add /absolute/path/to/extracted-3d-skills
 claude plugin install 3d-skills@alexhutnik-3d
 ```
 
@@ -189,8 +191,16 @@ Replace `v1.0.0` with the desired release. Keep local changes on a development b
 Select the previous tag and repeat setup to roll back.
 Links continue to point to the same checkout.
 
-For plugins, update the source checkout first. Then refresh the marketplace and installed plugin.
-Codex desktop users can refresh or reinstall the local plugin through the Plugins Directory.
+For plugins, replace the extracted source folder with a clean copy of the desired release.
+Keep the same folder path. Then refresh the marketplace and installed plugin.
+Codex desktop users can reinstall the local plugin through the Plugins Directory.
+Codex CLI users can run:
+
+```sh
+codex plugin remove 3d-skills@alexhutnik-3d
+codex plugin add 3d-skills@alexhutnik-3d
+```
+
 Claude CLI users can run:
 
 ```sh
