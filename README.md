@@ -44,25 +44,32 @@ For links or direct tool use, clone the release:
 ```sh
 git clone --branch v1.0.0 https://github.com/alexhutnik/3d-skills.git
 cd 3d-skills
-uv sync --locked --no-dev
-uv run --locked --no-dev python manage.py setup
-uv run --locked --no-dev python manage.py doctor
+uv run manage.py setup
+uv run manage.py doctor
 ```
 
 The clone selects a fixed release. This prevents later commits from changing a working installation.
 Use your normal GitHub authentication for private access. Do not put a token in a command or URL.
 
+`uv run manage.py setup` is the only Python setup command you need after cloning.
+`uv` prepares the command environment and downloads Python when needed.
+The setup tool installs each CAD environment from its committed lockfile.
+You do not need to activate an environment or run `uv sync` separately.
+
+For plugin use, install `uv` once. The agent follows the skill instructions to prepare its tools when needed.
+You do not need to type the longer commands from the skill files.
+
 `setup` prepares both tool environments. To install only the tools you need:
 
 ```sh
-uv run --locked --no-dev python manage.py setup --profile inspect
-uv run --locked --no-dev python manage.py setup --profile print
+uv run manage.py setup --profile inspect
+uv run manage.py setup --profile print
 ```
 
 A fixed-frame video export also needs FFmpeg and Playwright Chromium:
 
 ```sh
-uv run --locked --no-dev python manage.py setup --profile inspect --browser
+uv run manage.py setup --profile inspect --browser
 ```
 
 Install FFmpeg through your operating system package manager. HTML reviews do not need FFmpeg.
@@ -84,7 +91,7 @@ If your CLI does not have `plugin add`, install through the desktop application 
 For local development, link the skills to your project:
 
 ```sh
-uv run --locked --no-dev python manage.py link --destination /absolute/project/.agents/skills
+uv run manage.py link --destination /absolute/project/.agents/skills
 ```
 
 Start Codex in that project. Use `$design-3d` to select the linked skill.
@@ -124,7 +131,7 @@ claude --plugin-dir /absolute/path/to/3d-skills
 You can also link individual skills to a project:
 
 ```sh
-uv run --locked --no-dev python manage.py link --destination /absolute/project/.claude/skills
+uv run manage.py link --destination /absolute/project/.claude/skills
 ```
 
 Start Claude Code in that project. Invoke `/design-3d` for the linked skill.
@@ -183,8 +190,8 @@ For a linked installation, update the checkout to a tested release:
 git status --short
 git fetch --tags origin
 git switch --detach v1.0.0
-uv run --locked --no-dev python manage.py setup
-uv run --locked --no-dev python manage.py doctor
+uv run manage.py setup
+uv run manage.py doctor
 ```
 
 Replace `v1.0.0` with the desired release. Keep local changes on a development branch before switching.
@@ -216,7 +223,7 @@ See [release instructions](docs/RELEASING.md) for the exact release process.
 To remove linked skills:
 
 ```sh
-uv run --locked --no-dev python manage.py unlink --destination /absolute/project/.agents/skills
+uv run manage.py unlink --destination /absolute/project/.agents/skills
 ```
 
 Use the original destination. This command removes only links to the current checkout.
