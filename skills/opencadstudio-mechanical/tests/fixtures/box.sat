@@ -1,0 +1,88 @@
+700 0 1 0
+8 acadrust 8 ACIS 7.0 24 Thu Jan 01 00:00:00 2023
+10 1e-006 1e-010
+body $-1 -1 $-1 $84 $-1 $-1 #
+point $-1 -1 $-1 0 0 0 #
+vertex $-1 -1 $-1 $35 $1 #
+point $-1 -1 $-1 20 0 0 #
+vertex $-1 -1 $-1 $35 $3 #
+point $-1 -1 $-1 0 30 0 #
+vertex $-1 -1 $-1 $36 $5 #
+point $-1 -1 $-1 20 30 0 #
+vertex $-1 -1 $-1 $36 $7 #
+point $-1 -1 $-1 0 0 10 #
+vertex $-1 -1 $-1 $37 $9 #
+point $-1 -1 $-1 20 0 10 #
+vertex $-1 -1 $-1 $37 $11 #
+point $-1 -1 $-1 0 30 10 #
+vertex $-1 -1 $-1 $38 $13 #
+point $-1 -1 $-1 20 30 10 #
+vertex $-1 -1 $-1 $38 $15 #
+straight-curve $-1 -1 $-1 0 0 0 20 0 0 I I #
+straight-curve $-1 -1 $-1 0 30 0 20 0 0 I I #
+straight-curve $-1 -1 $-1 0 0 10 20 0 0 I I #
+straight-curve $-1 -1 $-1 0 30 10 20 0 0 I I #
+straight-curve $-1 -1 $-1 0 0 0 0 30 0 I I #
+straight-curve $-1 -1 $-1 20 0 0 0 30 0 I I #
+straight-curve $-1 -1 $-1 0 0 10 0 30 0 I I #
+straight-curve $-1 -1 $-1 20 0 10 0 30 0 I I #
+straight-curve $-1 -1 $-1 0 0 0 0 0 10 I I #
+straight-curve $-1 -1 $-1 20 0 0 0 0 10 I I #
+straight-curve $-1 -1 $-1 0 30 0 0 0 10 I I #
+straight-curve $-1 -1 $-1 20 30 0 0 0 10 I I #
+plane-surface $-1 -1 $-1 0 0 0 -1 0 0 0 1 0 forward_v I I I I #
+plane-surface $-1 -1 $-1 20 0 0 1 0 -0 0 0 1 forward_v I I I I #
+plane-surface $-1 -1 $-1 0 0 0 0 -1 0 0 0 1 forward_v I I I I #
+plane-surface $-1 -1 $-1 0 30 0 -0 1 0 1 0 0 forward_v I I I I #
+plane-surface $-1 -1 $-1 0 0 0 0 0 -1 1 0 0 forward_v I I I I #
+plane-surface $-1 -1 $-1 0 0 10 0 -0 1 0 1 0 forward_v I I I I #
+edge $-1 -1 $-1 $2 0 $4 1 $55 $17 forward @7 unknown #
+edge $-1 -1 $-1 $6 0 $8 1 $62 $18 forward @7 unknown #
+edge $-1 -1 $-1 $10 0 $12 1 $57 $19 forward @7 unknown #
+edge $-1 -1 $-1 $14 0 $16 1 $60 $20 forward @7 unknown #
+edge $-1 -1 $-1 $2 0 $6 1 $50 $21 forward @7 unknown #
+edge $-1 -1 $-1 $4 0 $8 1 $51 $22 forward @7 unknown #
+edge $-1 -1 $-1 $10 0 $14 1 $48 $23 forward @7 unknown #
+edge $-1 -1 $-1 $12 0 $16 1 $53 $24 forward @7 unknown #
+edge $-1 -1 $-1 $2 0 $10 1 $47 $25 forward @7 unknown #
+edge $-1 -1 $-1 $4 0 $12 1 $54 $26 forward @7 unknown #
+edge $-1 -1 $-1 $6 0 $14 1 $49 $27 forward @7 unknown #
+edge $-1 -1 $-1 $8 0 $16 1 $52 $28 forward @7 unknown #
+coedge $-1 -1 $-1 $48 $50 $58 $43 forward $71 $-1 #
+coedge $-1 -1 $-1 $49 $47 $70 $41 forward $71 $-1 #
+coedge $-1 -1 $-1 $50 $48 $59 $45 reversed $71 $-1 #
+coedge $-1 -1 $-1 $47 $49 $63 $39 reversed $71 $-1 #
+coedge $-1 -1 $-1 $52 $54 $65 $40 forward $72 $-1 #
+coedge $-1 -1 $-1 $53 $51 $61 $46 forward $72 $-1 #
+coedge $-1 -1 $-1 $54 $52 $68 $42 reversed $72 $-1 #
+coedge $-1 -1 $-1 $51 $53 $56 $44 reversed $72 $-1 #
+coedge $-1 -1 $-1 $56 $58 $66 $35 forward $73 $-1 #
+coedge $-1 -1 $-1 $57 $55 $54 $44 forward $73 $-1 #
+coedge $-1 -1 $-1 $58 $56 $67 $37 reversed $73 $-1 #
+coedge $-1 -1 $-1 $55 $57 $47 $43 reversed $73 $-1 #
+coedge $-1 -1 $-1 $60 $62 $49 $45 forward $74 $-1 #
+coedge $-1 -1 $-1 $61 $59 $69 $38 forward $74 $-1 #
+coedge $-1 -1 $-1 $62 $60 $52 $46 reversed $74 $-1 #
+coedge $-1 -1 $-1 $59 $61 $64 $36 reversed $74 $-1 #
+coedge $-1 -1 $-1 $64 $66 $50 $39 forward $75 $-1 #
+coedge $-1 -1 $-1 $65 $63 $62 $36 forward $75 $-1 #
+coedge $-1 -1 $-1 $66 $64 $51 $40 reversed $75 $-1 #
+coedge $-1 -1 $-1 $63 $65 $55 $35 reversed $75 $-1 #
+coedge $-1 -1 $-1 $68 $70 $57 $37 forward $76 $-1 #
+coedge $-1 -1 $-1 $69 $67 $53 $42 forward $76 $-1 #
+coedge $-1 -1 $-1 $70 $68 $60 $38 reversed $76 $-1 #
+coedge $-1 -1 $-1 $67 $69 $48 $41 reversed $76 $-1 #
+loop $-1 -1 $-1 $-1 $47 $77 #
+loop $-1 -1 $-1 $-1 $51 $78 #
+loop $-1 -1 $-1 $-1 $55 $79 #
+loop $-1 -1 $-1 $-1 $59 $80 #
+loop $-1 -1 $-1 $-1 $63 $81 #
+loop $-1 -1 $-1 $-1 $67 $82 #
+face $-1 -1 $-1 $78 $71 $83 $-1 $29 forward single #
+face $-1 -1 $-1 $79 $72 $83 $-1 $30 forward single #
+face $-1 -1 $-1 $80 $73 $83 $-1 $31 forward single #
+face $-1 -1 $-1 $81 $74 $83 $-1 $32 forward single #
+face $-1 -1 $-1 $82 $75 $83 $-1 $33 forward single #
+face $-1 -1 $-1 $-1 $76 $83 $-1 $34 forward single #
+shell $-1 -1 $-1 $-1 $-1 $77 $-1 $84 #
+lump $-1 -1 $-1 $-1 $83 $0 #

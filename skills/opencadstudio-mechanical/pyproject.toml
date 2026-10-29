@@ -1,0 +1,11 @@
+[project]
+name = "opencadstudio-mechanical-tools"
+version = "1.0.0"
+requires-python = ">=3.13,<3.14"
+dependencies = ["cadquery==2.8.0", "cq-acis==0.3.12", "trimesh==4.12.2", "numpy>=2,<3", "scipy>=1.16,<2", "networkx>=3,<4", "typer>=0.27.3", "rich>=15.0.0"]
+
+[dependency-groups]
+dev = ["pytest>=9.1.1", "ruff>=0.17.2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

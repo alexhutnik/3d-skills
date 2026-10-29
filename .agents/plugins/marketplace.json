@@ -1,0 +1,20 @@
+{
+  "name": "alexhutnik-3d",
+  "interface": {
+    "displayName": "Alex Hutnik 3D Skills"
+  },
+  "plugins": [
+    {
+      "name": "3d-skills",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "OCS Mechanical CAD"
+  short_description: "Build and check OCS parts without save dialogs"
+  default_prompt: "Use $opencadstudio-mechanical to build and check this mechanical part through OCS."
