@@ -7,8 +7,15 @@ description: Validate exact solids and exported meshes, prepare printable part f
 
 Resolve this skill folder from the loaded `SKILL.md` path. Follow symbolic links.
 Use its absolute path as `SKILL_DIR` in the commands below.
-Run `uv sync --project "$SKILL_DIR" --locked --no-dev` before using its scripts.
-Run scripts with `uv run --project "$SKILL_DIR" --locked --no-dev python "$SKILL_DIR/scripts/<script>.py"`.
+Set `PLUGIN_DIR` to the directory two levels above the resolved skill folder.
+This directory contains the shared `pyproject.toml` and `uv.lock`.
+Keep the complete plugin installed. Individual skill folders do not contain a Python project.
+
+```sh
+PLUGIN_DIR="$(cd "$SKILL_DIR/../.." && pwd -P)"
+```
+Run `uv sync --project "$PLUGIN_DIR" --locked --no-dev` before using its scripts.
+Run scripts with `uv run --project "$PLUGIN_DIR" --locked --no-dev python "$SKILL_DIR/scripts/<script>.py"`.
 The first run can download Python and dependencies. Keep generated files in the user project.
 
 
@@ -19,10 +26,10 @@ A STEP file is an exchange file. It does not preserve the original feature histo
 Check the exact solid before export: validity, positive volume, solid count, dimensions, and required interfaces.
 Reopen the export and compare it with the intended geometry.
 For an STL and its matching STEP, run `scripts/check_export.py`.
-Example after setting `SKILL_DIR`:
+Example after setting `SKILL_DIR` and `PLUGIN_DIR`:
 
 ```text
-uv run --project "$SKILL_DIR" --locked --no-dev python "$SKILL_DIR/scripts/check_export.py" project/output/part.step project/output/part.stl --size 90 65 46 --bodies 1 --report project/output/export-check.json
+uv run --project "$PLUGIN_DIR" --locked --no-dev python "$SKILL_DIR/scripts/check_export.py" project/output/part.step project/output/part.stl --size 90 65 46 --bodies 1 --report project/output/export-check.json
 ```
 
 Use the actual required dimensions in this command.

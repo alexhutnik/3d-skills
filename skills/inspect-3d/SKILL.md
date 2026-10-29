@@ -7,8 +7,15 @@ description: Create offline HTML reviews of CAD parts and assemblies, with named
 
 Resolve this skill folder from the loaded `SKILL.md` path. Follow symbolic links.
 Use its absolute path as `SKILL_DIR` in the commands below.
-Run `uv sync --project "$SKILL_DIR" --locked --no-dev` before using its scripts.
-Run scripts with `uv run --project "$SKILL_DIR" --locked --no-dev python "$SKILL_DIR/scripts/<script>.py"`.
+Set `PLUGIN_DIR` to the directory two levels above the resolved skill folder.
+This directory contains the shared `pyproject.toml` and `uv.lock`.
+Keep the complete plugin installed. Individual skill folders do not contain a Python project.
+
+```sh
+PLUGIN_DIR="$(cd "$SKILL_DIR/../.." && pwd -P)"
+```
+Run `uv sync --project "$PLUGIN_DIR" --locked --no-dev` before using its scripts.
+Run scripts with `uv run --project "$PLUGIN_DIR" --locked --no-dev python "$SKILL_DIR/scripts/<script>.py"`.
 The first run can download Python and dependencies. Keep generated files in the user project.
 
 
@@ -24,7 +31,7 @@ It opens directly without a server, a network connection, or JavaScript build to
 Keep the file with its model revision. Do not imply that an old review updates after a CAD change.
 
 Read [viewer operation](references/viewers.md) for export, checks, and live viewer commands.
-Run these tools through this skill's `uv` project. Keep dependencies in `pyproject.toml` and `uv.lock`.
+Run these tools through the shared Python project. Keep dependencies in the root `pyproject.toml` and `uv.lock`.
 Use Typer for command-line arguments and Rich for useful status messages.
 Add a local Python server when live model changes or exact calculations improve the review.
 Use OCP Viewer for Python-controlled assembly views and explicit motion tracks.

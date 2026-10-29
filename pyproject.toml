@@ -1,15 +1,27 @@
 [project]
 name = "three-d-skills"
 version = "1.0.0"
-description = "Reusable CAD skills and independently tested Python tools"
+description = "Eight CAD skills with shared Python tools"
 requires-python = ">=3.13,<3.14"
-dependencies = ["typer>=0.27.3", "rich>=15.0.0"]
+dependencies = [
+    "build123d==0.13.0",
+    "k3d==3.2.0",
+    "numpy>=2.5.4,<3",
+    "ocp-viewer==1.2.0",
+    "playwright==1.64.0",
+    "trimesh==5.1.1",
+    "scipy>=1.16,<2",
+    "networkx>=3,<4",
+    "typer>=0.27.3",
+    "rich>=15.0.0",
+]
 
 [dependency-groups]
-dev = ["pytest>=9.1.1", "pyyaml>=6.0.3", "ruff>=0.17.2"]
+dev = ["pytest>=9.1.1", "pyyaml>=6.0.3", "ruff>=0.17.2", "pillow>=13.0.0"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "skills/inspect-3d/tests", "skills/release-3d-print/tests"]
+markers = ["browser: requires Playwright Chromium"]
 
 [tool.ruff]
 line-length = 120

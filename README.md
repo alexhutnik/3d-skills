@@ -13,7 +13,8 @@ Photogrammetry is outside this release.
 | Plugin | Normal use and sharing | Install a release, then update the installed plugin. |
 | Symbolic links | Local development | Edit the checkout. The links point to those files. |
 
-Both methods use the same skill folders and Python tools.
+Both methods use the same eight skill folders and one shared Python project.
+Keep the complete repository or plugin package. Copying an individual skill folder does not provide its Python tools.
 Use one method per application. Duplicate installations can expose the same skills twice.
 A plugin does not install Python dependencies or grant command permissions.
 
@@ -25,7 +26,7 @@ A plugin does not install Python dependencies or grant command permissions.
 - Use a browser for visual reviews.
 
 You do not need to install Python separately. `uv` can download the Python version specified by this repository.
-The supported Python version is 3.13. Each executable skill has its own locked environment.
+The supported Python version is 3.13. All executable skills use the root project and its committed `uv.lock`.
 CAD dependencies require compatible binary packages for your operating system.
 See [validation](docs/VALIDATION.md) for the tested platforms and remaining limits.
 
@@ -53,23 +54,18 @@ Use your normal GitHub authentication for private access. Do not put a token in 
 
 `uv run manage.py setup` is the only Python setup command you need after cloning.
 `uv` prepares the command environment and downloads Python when needed.
-The setup tool installs each CAD environment from its committed lockfile.
+The setup tool installs one shared environment from the root lockfile.
 You do not need to activate an environment or run `uv sync` separately.
 
 For plugin use, install `uv` once. The agent follows the skill instructions to prepare its tools when needed.
 You do not need to type the longer commands from the skill files.
 
-`setup` prepares both tool environments. To install only the tools you need:
-
-```sh
-uv run manage.py setup --profile inspect
-uv run manage.py setup --profile print
-```
+`setup` prepares the inspection and print tools together. It does not use skill profiles.
 
 A fixed-frame video export also needs FFmpeg and Playwright Chromium:
 
 ```sh
-uv run manage.py setup --profile inspect --browser
+uv run manage.py setup --browser
 ```
 
 Install FFmpeg through your operating system package manager. HTML reviews do not need FFmpeg.
@@ -97,6 +93,7 @@ uv run manage.py link --destination /absolute/project/.agents/skills
 Start Codex in that project. Use `$design-3d` to select the linked skill.
 Use `~/.agents/skills` as the destination only if you want the skills in every project.
 The installer refuses existing skill folders and unrelated links. It does not replace them.
+It removes obsolete links that point to missing skills in this checkout.
 
 ## Codex GUI
 
@@ -108,8 +105,9 @@ Restart the desktop application. Open its Plugins Directory and select **Alex Hu
 Install **3D Skills**, then start a new local session.
 Interface names can differ between desktop releases. Local skill folders remain an alternative.
 
-Plugin installation copies files into a cache. It does not use the checkout's Python environments.
-The skill instructions run `uv sync` inside the installed skill folder before using its tools.
+Plugin installation copies files into a cache. The installed plugin uses its own shared Python environment.
+The skill instructions find the plugin root and run `uv sync --project "$PLUGIN_DIR" --locked --no-dev`.
+For linked skills, they follow the link to find the repository root.
 The same rule applies after a plugin update.
 
 ## Claude CLI
@@ -175,8 +173,8 @@ Read each skill's references for its command arguments and limits.
 Generate a synthetic example and its offline review:
 
 ```sh
-uv run --project skills/inspect-3d --locked --no-dev python skills/inspect-3d/examples/make_demo.py /absolute/project/demo
-uv run --project skills/inspect-3d --locked --no-dev python skills/inspect-3d/scripts/export_review.py /absolute/project/demo/scene.json /absolute/project/demo/review.html
+uv run --locked --no-dev python skills/inspect-3d/examples/make_demo.py /absolute/project/demo
+uv run --locked --no-dev python skills/inspect-3d/scripts/export_review.py /absolute/project/demo/scene.json /absolute/project/demo/review.html
 ```
 
 Open `review.html` in a browser. It contains its viewer and display geometry.
@@ -192,9 +190,11 @@ git fetch --tags origin
 git switch --detach v1.0.0
 uv run manage.py setup
 uv run manage.py doctor
+uv run manage.py link --destination /absolute/project/.agents/skills
 ```
 
 Replace `v1.0.0` with the desired release. Keep local changes on a development branch before switching.
+Use your original link destination. For Claude, use the project's `.claude/skills` directory.
 Select the previous tag and repeat setup to roll back.
 Links continue to point to the same checkout.
 
@@ -238,12 +238,12 @@ uv run --locked python manage.py test --browser
 uv run --locked python manage.py package
 ```
 
-`manage.py test` runs Ruff and pytest in all three isolated environments.
+`manage.py test` runs Ruff and all pytest suites in the shared environment.
 Without `--browser`, it excludes only the browser tests.
 Tests generate their own synthetic parts.
 No test requires private projects, credentials, or an installed CAD application.
 
-The release archive contains the skills, scripts, dependency locks, examples, and tests.
+The release archive contains the eight skills, scripts, shared Python project, root lockfile, examples, and tests.
 It excludes virtual environments and generated models.
 
 See [the build plan](docs/PLAN.md), [validation](docs/VALIDATION.md), and [third-party notices](NOTICE.md).

@@ -1,4 +1,4 @@
-"""Install links, prepare isolated environments, test, and package the skills."""
+"""Install links, prepare the shared environment, test, and package the skills."""
 
 import hashlib
 import os
@@ -13,21 +13,12 @@ import typer
 from rich.console import Console
 
 ROOT = Path(__file__).resolve().parent
-PROFILES = {"inspect": "inspect-3d", "print": "release-3d-print"}
 app = typer.Typer(no_args_is_help=True, pretty_exceptions_enable=False)
 console = Console()
 
 
 def skills(root=ROOT):
     return sorted(path.parent for path in (root / "skills").glob("*/SKILL.md"))
-
-
-def selected(profile):
-    if profile == "all":
-        return list(PROFILES.values())
-    if profile not in PROFILES:
-        raise typer.BadParameter("Choose inspect, print, or all")
-    return [PROFILES[profile]]
 
 
 def run(command, cwd=ROOT):
@@ -56,7 +47,19 @@ def install_links(destination, root=ROOT):
         for target in reversed(created):
             target.unlink()
         raise
+    for target in owned_links(destination, root):
+        if not (target / "SKILL.md").is_file():
+            target.unlink()
     return pairs
+
+
+def owned_links(destination, root=ROOT):
+    if not destination.is_dir():
+        return []
+    source_folder = (root / "skills").resolve()
+    return [
+        target for target in destination.iterdir() if target.is_symlink() and target.resolve().parent == source_folder
+    ]
 
 
 @app.command()
@@ -73,27 +76,22 @@ def link(destination: Annotated[Path, typer.Option(help="Use .agents/skills for 
 @app.command()
 def unlink(destination: Annotated[Path, typer.Option()]):
     """Remove only links that point to this checkout. Keep all other files."""
-    for source in skills():
-        target = destination.expanduser() / source.name
-        if target.is_symlink() and target.resolve() == source.resolve():
-            target.unlink()
-            console.print(f"Removed {target}", markup=False)
+    for target in owned_links(destination.expanduser()):
+        target.unlink()
+        console.print(f"Removed {target}", markup=False)
 
 
 @app.command()
-def setup(profile: str = "all", dev: bool = False, browser: bool = False):
+def setup(dev: bool = False, browser: bool = False):
     """Install locked dependencies. uv downloads Python when needed."""
-    if browser and profile not in ("all", "inspect"):
-        raise typer.BadParameter("The browser requires the inspect profile")
-    for name in selected(profile):
-        run(["uv", "sync", "--project", str(ROOT / "skills" / name), "--locked", *([] if dev else ["--no-dev"])])
+    run(["uv", "sync", "--project", str(ROOT), "--locked", *([] if dev else ["--no-dev"])])
     if browser:
         run(
             [
                 "uv",
                 "run",
                 "--project",
-                str(ROOT / "skills/inspect-3d"),
+                str(ROOT),
                 "--locked",
                 "--no-dev",
                 "playwright",
@@ -104,53 +102,37 @@ def setup(profile: str = "all", dev: bool = False, browser: bool = False):
 
 
 @app.command()
-def doctor(profile: str = "all"):
-    """Check installed environments without installing dependencies."""
-    imports = {
-        "inspect-3d": "build123d, k3d, ocp_viewer, playwright",
-        "release-3d-print": "build123d, trimesh, scipy, networkx",
-    }
-    failed = False
-    for name in selected(profile):
-        project = ROOT / "skills" / name
-        executable = project / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-        if not executable.is_file():
-            console.print(f"Missing environment: {name}. Run setup.")
-            failed = True
-            continue
-        environment = os.environ.copy()
-        environment.pop("VIRTUAL_ENV", None)
-        result = subprocess.run(
-            [
-                "uv",
-                "run",
-                "--project",
-                str(project),
-                "--no-sync",
-                "--no-dev",
-                "python",
-                "-c",
-                f"import {imports[name]}; print('Imports passed: {name}')",
-            ],
-            check=False,
-            env=environment,
-        )
-        failed |= result.returncode != 0
+def doctor():
+    """Check the shared environment without installing dependencies."""
+    executable = ROOT / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    if not executable.is_file():
+        console.print("The shared environment is missing. Run setup.")
+        raise typer.Exit(1)
+    environment = os.environ.copy()
+    environment.pop("VIRTUAL_ENV", None)
+    result = subprocess.run(
+        [
+            str(executable),
+            "-c",
+            "import build123d, k3d, ocp_viewer, playwright, trimesh, scipy, networkx; "
+            "print('Imports passed: shared environment')",
+        ],
+        check=False,
+        cwd=ROOT,
+        env=environment,
+    )
     console.print(f"FFmpeg for video export: {shutil.which('ffmpeg') or 'not installed (optional)'}", markup=False)
-    if failed:
+    if result.returncode:
         raise typer.Exit(1)
 
 
 @app.command()
 def test(browser: bool = False):
-    """Run pytest in each isolated environment. Add --browser for browser checks."""
+    """Run all checks in the shared environment. Add --browser for browser checks."""
     run(["uv", "run", "--locked", "ruff", "check", "."])
     run(["uv", "run", "--locked", "ruff", "format", "--check", "."])
-    run(["uv", "run", "--locked", "pytest", "-q"])
-    for name in PROFILES.values():
-        project = ROOT / "skills" / name
-        marker = ["-m", "not browser"] if name == "inspect-3d" and not browser else []
-        run(["uv", "run", "--project", str(project), "--locked", "pytest", "-q", *marker], cwd=project)
+    marker = [] if browser else ["-m", "not browser"]
+    run(["uv", "run", "--locked", "pytest", "-q", *marker])
 
 
 def package_files(root):

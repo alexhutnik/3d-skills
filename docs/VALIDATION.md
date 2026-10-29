@@ -26,10 +26,8 @@ Installing a plugin does not prove that a chat session can run local Python or n
 
 ## Local results for 1.0.0
 
-The local suites include two browser tests.
-The extracted release passed its tests with newly created Python environments.
-Codex CLI discovered the marketplace entry as version 1.0.0. The temporary registration was removed after the check.
-Both Claude manifests passed strict validation with the installed Claude CLI.
-Codex CLI and Claude CLI installed the extracted plugin successfully. The temporary installations were then removed.
-The synthetic example produced an HTML review and a two-second MP4. The rendered model was inspected.
-Desktop installation through the graphical interface has not been tested in this session.
+All 43 tests passed in the shared environment, including two browser tests.
+Ruff checks and formatting checks passed. The shared environment passed the import check.
+The extracted archive passed all 41 non-browser tests in a fresh shared environment.
+Both Claude manifests passed strict validation with the installed CLI.
+Desktop installation through the graphical interface has not been tested for this revision.

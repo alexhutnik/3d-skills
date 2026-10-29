@@ -1,7 +1,7 @@
 # Development rules
 
 Use `uv run` for Python commands. Use pytest for tests.
-Keep executable skills self-contained. Each tool environment has a committed `uv.lock`.
+Keep the complete plugin self-contained. Use the root Python project and its committed `uv.lock` for all executable skills.
 Use Typer for command-line arguments. Keep generated models outside the skill folders.
 Keep the original inputs unchanged during inspection and validation.
 Do not require private projects, installed CAD applications, or account credentials for the default test suites.

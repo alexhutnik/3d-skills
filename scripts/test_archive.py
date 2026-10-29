@@ -1,4 +1,4 @@
-"""Test an extracted package in a new directory with separate environments."""
+"""Test an extracted package in a new directory with a fresh shared environment."""
 
 import os
 import subprocess

@@ -4,7 +4,7 @@ Build one source repository for eight CAD skills. Start at version 1.0.0.
 Keep the GitHub repository private. Exclude photogrammetry.
 
 1. Extract the skills without private models, measurements, or research dependencies.
-2. Keep each executable skill self-contained with Python 3.13 and a locked uv environment.
+2. Keep the complete plugin self-contained with Python 3.13 and one shared, locked uv environment.
 3. Provide plugin manifests for Codex and Claude. Provide safe symbolic-link installation for development.
 4. Document setup, updates, rollback, and removal for CLI and desktop users.
 5. Test the Python scripts with pytest and independent synthetic geometry.

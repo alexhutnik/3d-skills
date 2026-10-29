@@ -1,11 +1,13 @@
 # Browser review workflows
 
 Set `SKILL_DIR` to this installed skill's absolute path. Follow symbolic links.
+Set `PLUGIN_DIR` to the directory two levels above that folder. Keep the complete plugin installed.
 Keep output files in the user project. Use the locked environment:
 
 ```sh
-uv sync --project "$SKILL_DIR" --locked --no-dev
-uv run --project "$SKILL_DIR" --locked --no-dev python "$SKILL_DIR/scripts/export_review.py" /absolute/project/scene.json /absolute/project/review.html
+PLUGIN_DIR="$(cd "$SKILL_DIR/../.." && pwd -P)"
+uv sync --project "$PLUGIN_DIR" --locked --no-dev
+uv run --project "$PLUGIN_DIR" --locked --no-dev python "$SKILL_DIR/scripts/export_review.py" /absolute/project/scene.json /absolute/project/review.html
 ```
 
 Open the HTML file in a browser. It embeds the viewer and display meshes.
@@ -33,8 +35,8 @@ The browser selects MP4 or WebM. The actual frame rate depends on the browser an
 For a fixed frame rate, install FFmpeg and Playwright Chromium, then run:
 
 ```sh
-uv run --project "$SKILL_DIR" --locked --no-dev playwright install chromium
-uv run --project "$SKILL_DIR" --locked --no-dev python "$SKILL_DIR/scripts/render_video.py" /absolute/project/review.html /absolute/project/review.mp4
+uv run --project "$PLUGIN_DIR" --locked --no-dev playwright install chromium
+uv run --project "$PLUGIN_DIR" --locked --no-dev python "$SKILL_DIR/scripts/render_video.py" /absolute/project/review.html /absolute/project/review.mp4
 ```
 
 The defaults are 12 seconds, 1920 × 1080 pixels, and 60 frames per second.
@@ -47,13 +49,13 @@ Use a live server when Python must send changed geometry or calculate exact resu
 Start the server in a tool session that remains alive:
 
 ```sh
-uv run --project "$SKILL_DIR" --locked --no-dev python -m ocp_viewer --host 127.0.0.1 --port 3939 --theme light
+uv run --project "$PLUGIN_DIR" --locked --no-dev python -m ocp_viewer --host 127.0.0.1 --port 3939 --theme light
 ```
 
 Open `http://127.0.0.1:3939/viewer`, then send the scene:
 
 ```sh
-uv run --project "$SKILL_DIR" --locked --no-dev python "$SKILL_DIR/scripts/show_scene.py" /absolute/project/scene.json --motion
+uv run --project "$PLUGIN_DIR" --locked --no-dev python "$SKILL_DIR/scripts/show_scene.py" /absolute/project/scene.json --motion
 ```
 
 Use `--check-only` to validate the scene without contacting a server.
@@ -67,9 +69,10 @@ Stop only the server started for the current task.
 Run the independent tests from this skill folder:
 
 ```sh
-uv sync --project "$SKILL_DIR" --locked
-uv run --project "$SKILL_DIR" --locked playwright install chromium
-uv run --project "$SKILL_DIR" --locked pytest "$SKILL_DIR/tests"
+PLUGIN_DIR="$(cd "$SKILL_DIR/../.." && pwd -P)"
+uv sync --project "$PLUGIN_DIR" --locked
+uv run --project "$PLUGIN_DIR" --locked playwright install chromium
+uv run --project "$PLUGIN_DIR" --locked pytest "$SKILL_DIR/tests"
 ```
 
 The tests generate a synthetic assembly and use an offline browser context.

@@ -2,9 +2,9 @@
 
 Use a clean checkout. Never reuse or move a published release tag.
 
-1. Update the version in all three `pyproject.toml` files and all three plugin manifests.
+1. Update the version in the root `pyproject.toml` file and all three plugin manifests.
 2. Update the Claude marketplace entry and `CHANGELOG.md`.
-3. Run `uv lock` for each changed project and commit the resulting lockfiles.
+3. Run `uv lock` at the repository root and commit the resulting lockfile.
 4. Run the checks below.
 5. Commit the release files and push the branch.
 6. Wait for both GitHub check jobs to pass.
@@ -31,9 +31,9 @@ Use a patch version for compatible fixes. Use a minor version for compatible add
 Use a major version when an existing command, file format, or supported environment becomes incompatible.
 Do not update dependencies silently within a published release.
 
-The archive is also a plugin package. It retains every skill's scripts, references, and lockfile.
+The archive is also a plugin package. It retains all eight skills and the shared Python project with its root lockfile.
 It does not contain Python, virtual environments, browsers, or CAD application binaries.
-The archive test creates new environments from the included locks.
+The archive test creates one new environment from the root lockfile.
 
 Before making the repository public, review the current files and Git history.
 The current package includes an MIT license and third-party notices.

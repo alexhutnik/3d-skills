@@ -22,6 +22,7 @@ def test_install_repeat_and_remove(tmp_path):
     assert len(list(destination.iterdir())) == 8
     for source in manage.skills():
         assert (destination / source.name / "SKILL.md").read_bytes() == (source / "SKILL.md").read_bytes()
+        assert (destination / source.name).resolve().parents[1] == ROOT
     keep = destination / "unrelated"
     keep.mkdir()
     result = CliRunner().invoke(manage.app, ["unlink", "--destination", str(destination)])
@@ -65,6 +66,30 @@ def test_install_rolls_back_on_failure(tmp_path, monkeypatch):
     assert not list((tmp_path / "skills").iterdir())
 
 
+@pytest.mark.parametrize("operation", ["link", "unlink"])
+def test_removed_skill_links_do_not_survive_update(tmp_path, monkeypatch, operation):
+    root = tmp_path / "repository"
+    source = root / "skills/current"
+    source.mkdir(parents=True)
+    (source / "SKILL.md").write_text("Current skill")
+    destination = tmp_path / "installed"
+    destination.mkdir()
+    removed = destination / "removed"
+    removed.symlink_to(root / "skills/removed", target_is_directory=True)
+    unrelated = destination / "unrelated"
+    unrelated.symlink_to(tmp_path / "another-repository/skills/removed", target_is_directory=True)
+    if operation == "link":
+        manage.install_links(destination, root)
+        assert (destination / "current/SKILL.md").is_file()
+    else:
+        original = manage.owned_links
+        monkeypatch.setattr(manage, "owned_links", lambda path: original(path, root))
+        result = CliRunner().invoke(manage.app, ["unlink", "--destination", str(destination)])
+        assert result.exit_code == 0, result.output
+    assert not removed.is_symlink()
+    assert unrelated.is_symlink()
+
+
 def test_versions_and_marketplace_paths():
     version = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["version"]
     assert re.fullmatch(r"\d+\.\d+\.\d+", version)
@@ -72,9 +97,9 @@ def test_versions_and_marketplace_paths():
         data = json.loads(path.read_text())
         assert data["version"] == version
         assert data["name"] == "3d-skills"
-    for path in (ROOT / "skills").glob("*/pyproject.toml"):
-        assert tomllib.loads(path.read_text())["project"]["version"] == version
-        assert path.with_name("uv.lock").is_file()
+    assert (ROOT / "uv.lock").is_file()
+    assert not list((ROOT / "skills").glob("*/pyproject.toml"))
+    assert not list((ROOT / "skills").glob("*/uv.lock"))
     for path in [ROOT / ".agents/plugins/marketplace.json", ROOT / ".claude-plugin/marketplace.json"]:
         entry = json.loads(path.read_text())["plugins"][0]
         source = entry["source"]
@@ -113,11 +138,15 @@ def test_complete_reproducible_archive(tmp_path):
         assert "plugin.json" in names
         assert "manage.py" in names
         assert "uv.lock" in names
+        assert "pyproject.toml" in names
+        assert [name for name in names if name.endswith("uv.lock")] == ["uv.lock"]
+        assert [name for name in names if name.endswith("pyproject.toml")] == ["pyproject.toml"]
         assert sum(name.endswith("/SKILL.md") for name in names) == 8
         assert not any(".venv/" in name or "__pycache__/" in name or name.startswith("/") for name in names)
         archive.extractall(tmp_path / "unpacked")
     manage.install_links(tmp_path / "installed", tmp_path / "unpacked")
     assert (tmp_path / "installed/inspect-3d/scripts/export_review.py").is_file()
+    assert (tmp_path / "installed/inspect-3d").resolve().parents[1] == tmp_path / "unpacked"
     checksum = hashlib.sha256(first.read_bytes()).hexdigest()
     assert first.with_suffix(".zip.sha256").read_text().startswith(checksum)
 
@@ -140,7 +169,31 @@ def test_archive_rejects_path_escape(tmp_path):
     assert "unsafe path" in str(result.exception)
 
 
-def test_setup_rejects_bad_options_before_install(monkeypatch):
+@pytest.mark.parametrize("dev", [False, True])
+@pytest.mark.parametrize("browser", [False, True])
+def test_setup_uses_shared_project(monkeypatch, dev, browser):
+    calls = []
+    monkeypatch.setattr(manage, "run", lambda command: calls.append(command))
+    options = (["--dev"] if dev else []) + (["--browser"] if browser else [])
+    result = CliRunner().invoke(manage.app, ["setup", *options])
+    assert result.exit_code == 0, result.output
+    assert calls[0] == ["uv", "sync", "--project", str(ROOT), "--locked", *([] if dev else ["--no-dev"])]
+    if browser:
+        assert calls[1] == [
+            "uv",
+            "run",
+            "--project",
+            str(ROOT),
+            "--locked",
+            "--no-dev",
+            "playwright",
+            "install",
+            "chromium",
+        ]
+    assert len(calls) == 1 + browser
+
+
+def test_setup_rejects_removed_profiles(monkeypatch):
     calls = []
     monkeypatch.setattr(manage, "run", lambda *args, **kwargs: calls.append(args))
     result = CliRunner().invoke(manage.app, ["setup", "--profile", "print", "--browser"])
