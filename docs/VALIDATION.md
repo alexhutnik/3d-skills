@@ -5,6 +5,7 @@ The automated suites use pytest. They do not require a model provider or an agen
 | Suite | Checks |
 | --- | --- |
 | Package | Links, conflicts, rollback, removal, versions, references, complete reproducible ZIP. |
+| Release | Creation, repeated publication, failed requests, failed uploads, and missing files with simulated GitHub responses. |
 | Inspection | STEP transforms, source hashes, invalid scenes, HTML escaping, output safety. |
 | Browser | Offline rendering, fresh reopening, visibility, rotation, separation, playback, recording. |
 | Print | Valid exports, open surfaces, reversed faces, extra bodies, translation, wrong dimensions, invalid input. |
@@ -26,8 +27,8 @@ Installing a plugin does not prove that a chat session can run local Python or n
 
 ## Local results for 1.0.0
 
-All 43 tests passed in the shared environment, including two browser tests.
+All 49 tests passed in the shared environment, including two browser tests.
 Ruff checks and formatting checks passed. The shared environment passed the import check.
-The extracted archive passed all 41 non-browser tests in a fresh shared environment.
+The extracted archive passed all 47 non-browser tests in a fresh shared environment.
 Both Claude manifests passed strict validation with the installed CLI.
 Desktop installation through the graphical interface has not been tested for this revision.

@@ -10,3 +10,4 @@
 - Add synthetic examples and independent test fixtures.
 - Prevent report files from replacing their input files.
 - Add automated checks and release packaging.
+- Support release publication retries when the release already exists.

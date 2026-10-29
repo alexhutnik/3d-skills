@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   checks:
     uses: ./.github/workflows/checks.yml
@@ -25,4 +29,4 @@ jobs:
       - name: Publish the checked release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/*.zip dist/*.sha256 --verify-tag --title "$GITHUB_REF_NAME" --notes-file CHANGELOG.md
+        run: uv run --locked python scripts/publish_release.py "$GITHUB_REF_NAME" "$GITHUB_REPOSITORY"

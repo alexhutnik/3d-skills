@@ -27,6 +27,13 @@ Replace the version for later releases. The workflow runs the tests again before
 It creates a GitHub release with the complete source ZIP and SHA-256 checksum.
 The repository's visibility controls access to the release.
 
+The publication step supports retries after the checks pass.
+For an existing release, it replaces the matching ZIP and checksum, then updates the title and release notes.
+It preserves other attached files. A failed release query stops publication.
+Runs for the same tag wait for earlier runs to finish.
+GitHub deletes each matching file before it uploads the replacement. If an upload fails, retry the workflow.
+Get explicit owner consent before replacing published files or moving a published tag for a repair.
+
 Use a patch version for compatible fixes. Use a minor version for compatible additions.
 Use a major version when an existing command, file format, or supported environment becomes incompatible.
 Do not update dependencies silently within a published release.
