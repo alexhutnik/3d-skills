@@ -1,0 +1,17 @@
+{
+  "name": "alexhutnik-3d",
+  "metadata": {
+    "description": "CAD skills and Python tools for mechanical design and inspection."
+  },
+  "owner": {
+    "name": "Alex Hutnik"
+  },
+  "plugins": [
+    {
+      "name": "3d-skills",
+      "source": "./",
+      "description": "Design, inspect, and validate mechanical 3D parts with tested Python tools.",
+      "version": "1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "3d-skills",
+  "version": "1.0.0",
+  "description": "Design, inspect, and validate mechanical 3D parts with tested Python tools.",
+  "author": {
+    "name": "Alex Hutnik"
+  },
+  "repository": "https://github.com/alexhutnik/3d-skills",
+  "license": "MIT"
+}

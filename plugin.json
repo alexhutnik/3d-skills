@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "3d-skills",
+  "version": "1.0.0",
+  "description": "Design, inspect, and validate mechanical 3D parts with tested Python tools.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "3D Skills",
+        "shortDescription": "Design and check mechanical 3D parts",
+        "longDescription": "Eight CAD skills with local Python tools for browser inspection and geometry checks. Requires uv and local command execution."
+      },
+      "requires_local_executor": true
+    }
+  }
+}

@@ -1,0 +1,33 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.6"
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run --locked python manage.py setup --dev
+      - run: uv run --project skills/inspect-3d --locked playwright install --with-deps chromium
+      - run: uv run --locked python manage.py test --browser
+      - run: uv run --locked python manage.py package
+      - name: Test the extracted release
+        run: uv run --locked python scripts/test_archive.py dist/3d-skills-v*.zip
+
